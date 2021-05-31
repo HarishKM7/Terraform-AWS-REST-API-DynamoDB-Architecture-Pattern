@@ -3,6 +3,19 @@ data "aws_region" "region" {}
 locals {
   openAPI_spec = {
     "/item" : {
+      post : {
+        responses : {
+          200 : { content : { "application/json" : { schema : {} } } }
+        }
+        x-amazon-apigateway-integration : {
+          type : "aws"
+          httpMethod : "POST"
+          credentials : aws_iam_role.iam_role.arn
+          responses : { default : { statusCode : "200" } }
+          uri : "arn:aws:apigateway:${data.aws_region.region.name}:dynamodb:action/PutItem"
+        }
+      }
+
       get : {
         parameters : [{
           name : "id"
